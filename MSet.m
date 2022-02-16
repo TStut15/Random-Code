@@ -1,0 +1,36 @@
+x=input("x = ");
+y=input("y = ");
+b=input("resolution = ");
+s=input("scale = ");
+x1=input("delta x = ");
+y1=input("delta y = ");
+A=meshgrid(linspace(0,0,2*x+1),linspace(0,0,2*y+1));
+m=-y;
+h=waitbar(0,"Please Wait ...","createcancelbtn","setappdata(gcbf,'endcal',true)");
+while m<=y;
+  n=-x;
+  while n<=x;
+    p=0;
+    o=0;
+    z=0;
+    while and(o<b,p<2);
+      z=z^2+(n*(2/(s*x))+x1+m*(2/(s*y))*i+y1*i);
+      o=o+1;
+      p=abs(z);
+    endwhile;
+    A(m+1+y,n+1+x)=o;
+    h=waitbar((m+y)/(2*y+1)+(n+x)/(2*x+1)/(2*y+1)+o/b/(2*x+1)/(2*y+1));
+    n=n+1;
+    if getappdata(h,"endcal")
+      delete(h);
+      z=5;
+      p=5;
+      n=x+1;
+      m=y+1;
+      break;
+    endif
+  endwhile;
+  m=m+1;
+endwhile;
+contourf(linspace(-2/s+x1,2/s+x1,2*x+1),linspace(-2/s+y1,2/s+y1,2*y+1),log2(A));
+delete(h);
