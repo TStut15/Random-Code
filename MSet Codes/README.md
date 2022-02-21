@@ -1,9 +1,11 @@
 # MSet
 Code for calcuating mandelbrot set.
 ## Code
-### Matlab
-The Matlab Code is slower than the Fortran code, but the graphical options are better for display.
-### Fortran
-The Fortran Code is faster than the Matlab code, but can only output in the PGM image format.
+### MSet.m
+This is a Matlab Code. This runs slower than the Fortran code, but the graphical options are better for display.
+### MSet.f90
+The is a Fortran Code. This runs faster than the Matlab code, but can only output in the plain PGM image format.
+### MSet2.f90
+This is a change to the MSet.f90 code to use the other PGM format (Image is in bytes instead of Ascii) making the image file smaller.
 ## Images
 Images are generated from the codes
