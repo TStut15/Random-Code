@@ -32,3 +32,6 @@ This image was created before contrast was improved by moving (if all the values
 ![ColorTest](ColorTest,MSet2Color.f90,-0.75,0,1.6.png)
 ### `ColorVersion,MSet2Color.f90,-0.74548,0.11669,313.png`
 ![ColorVersion](ColorVersion,MSet2Color.f90,-0.74548,0.11669,313.png)
+## `MSetLOL.lol` Images
+### `LOLCodeMSet,MSetLOL.lol,-0.75,0,1.6.png`
+![LOLCodeMSet](LOLCodeMSet,MSetLOL.lol,-0.75,0,1.6.png)
