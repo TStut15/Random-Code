@@ -10,6 +10,9 @@ end type quaternion
  interface operator(.qxq.)
  module procedure QMultipyQ
  end interface
+ interface operator(.qtq.)
+ module procedure QPlusQ
+ end interface
  
 contains
 
@@ -21,6 +24,15 @@ function QMultipyQ(Q1,Q2)
 	QMultipyQ%j=Q1%r*Q2%j-Q1%i*Q2%k+Q1%j*Q2%r+Q1%k*Q2%i
 	QMultipyQ%k=Q1%r*Q2%k+Q1%i*Q2%j-Q1%j*Q2%i+Q1%k*Q2%r
 end function QMultipyQ
+
+function QPlusQ(Q1,Q2)
+	type(quaternion), intent(in) :: Q1,Q2
+	type(quaternion) :: QPlusQ
+	QPlusQ%r=Q1%r+Q2%r
+	QPlusQ%i=Q1%i+Q2%i
+	QPlusQ%j=Q1%j+Q2%j
+	QPlusQ%k=Q1%k+Q2%k
+end function QPlusQ
 
 function XYZtoQ(XYZ)
 	real, allocatable, intent(in) :: XYZ(:,:)
@@ -46,5 +58,11 @@ function QtoXYZ(Q)
 		QtoXYZ(3,n)=Q(n)%k
 	end do
 end function QtoXYZ
+
+function absQ(Q)
+	type(quaternion), intent(in) :: Q
+	real :: absQ
+	absQ=sqrt(q%r**2+q%i**2+q%j**2+q%k**2)
+end function absQ
 
 end module
