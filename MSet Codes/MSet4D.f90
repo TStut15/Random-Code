@@ -38,63 +38,132 @@ program MSet4D
 	allocate(A(5,(2*w+1)*(2*x+1)*(2*y+1)*(2*z+1)))
 	A(:,:)=0
 	
-	do k=-w,w
-		do l=-x,x
-			do m=-y,y
-				do n=-z,z
-				o=0
-				p=0
-				q=quaternion(0,0,0,0)
-					do while (o<b.and.p<2)
-						q=(q.qxq.q).qtq.quaternion(k*2/(s*w)+w1,l*2/(s*x)+x1,m*2/(s*y)+y1,n*2/(s*z)+z1)
-						o=o+1
-						p=absQ(q)
+	if ((z.ne.0).and.(w.ne.0)) then !4D
+		do k=-w,w
+			do l=-x,x
+				do m=-y,y
+					do n=-z,z
+						o=0
+						p=0
+						q=quaternion(0,0,0,0)
+							do while (o<b.and.p<2)
+								q=(q.qxq.q).qtq.quaternion(k*2/(s*w)+w1,l*2/(s*x)+x1,m*2/(s*y)+y1,n*2/(s*z)+z1)
+								o=o+1
+								p=absQ(q)
+							end do
+						c=z+n+1
+						c=c+(y+m)*(2*z+1)
+						c=c+(x+l)*(2*z+1)*(2*y+1)
+						c=c+(w+k)*(2*z+1)*(2*y+1)*(2*x+1)
+						A(1,c)=k*2/(s*w)+w1
+						A(2,c)=l*2/(s*x)+x1
+						A(3,c)=m*2/(s*y)+y1
+						A(4,c)=n*2/(s*z)+z1
+						if (o.eq.b) then
+							A(5,c)=1
+						end if
 					end do
-				c=z+n+1
-				c=c+(y+m)*(2*z+1)
-				c=c+(x+l)*(2*z+1)*(2*y+1)
-				c=c+(w+k)*(2*z+1)*(2*y+1)*(2*x+1)
-				A(1,c)=k*2/(s*w)+w1
-				A(2,c)=l*2/(s*x)+x1
-				A(3,c)=m*2/(s*y)+y1
-				A(4,c)=n*2/(s*z)+z1
-				if (o.eq.b) then
-					A(5,c)=1
-				end if
 				end do
 			end do
 		end do
-	end do
-!	!4D
-!	do n=1,size(A,2)
-!		q=quaternion(A(1,n),A(2,n),A(3,n),A(4,n))
-!		p=A(5,n)
-!		A(1,n)=q%i+sqrt(2.0)*(q%r-q%k)/2
-!		A(2,n)=q%j+sqrt(2.0)*(q%r+q%k)/2
-!		A(3,n)=p
-!		if (p.ne.0) then
-!			A(4,n)=4+q%i-q%r
-!		else
-!			A(4,n)=0
-!		end if
-!	end do
-!	deallocate(A)
-!	call plot3I(A,[2*x+1,2*y+1])
-	!3D
-	open(2,file="test.csv")
-	do n=1,size(A,2)
-		q=quaternion(A(1,n),A(2,n),A(3,n),A(4,n))
-		p=A(5,n)
-		A(1,n)=q%r+q%i
-		A(2,n)=q%j+(q%r-q%i)/2
-		A(3,n)=p
-		if (p.ne.0) then
-			A(4,n)=4+q%i-q%r
-		else
-			A(4,n)=0
-		end if
-	end do
-	close(2)
-	call plot3I(A,[4*x+1,4*y+1])
 	
+		do n=1,size(A,2)
+			q=quaternion(A(1,n),A(2,n),A(3,n),A(4,n))
+			p=A(5,n)
+			A(1,n)=q%i+sqrt(2.0)*(q%r-q%k)/2
+			A(2,n)=q%j+sqrt(2.0)*(q%r+q%k)/2
+			A(3,n)=p*(4+q%i-q%r)
+			if (p.ne.0) then
+				A(4,n)=4+q%i-q%r
+			else
+				A(4,n)=0
+			end if
+		end do
+		call plot3I(A,[4*x+1,4*y+1])
+	
+	elseif (w.eq.0) then!3D imaginary
+	
+		do l=-x,x
+			do m=-y,y
+				do n=-z,z
+					o=0
+					p=0
+					q=quaternion(0,0,0,0)
+						do while (o<b.and.p<2)
+							q=(q.qxq.q).qtq.quaternion(w1,l*2/(s*x)+x1,m*2/(s*y)+y1,n*2/(s*z)+z1)
+							o=o+1
+							p=absQ(q)
+						end do
+					c=z+n+1
+					c=c+(y+m)*(2*z+1)
+					c=c+(x+l)*(2*z+1)*(2*y+1)
+					A(1,c)=w1
+					A(2,c)=l*2/(s*x)+x1
+					A(3,c)=m*2/(s*y)+y1
+					A(4,c)=n*2/(s*z)+z1
+					if (o.eq.b) then
+						A(5,c)=1
+					end if
+				end do
+			end do
+		end do
+
+		do n=1,size(A,2)
+			q=quaternion(A(1,n),A(2,n),A(3,n),A(4,n))
+			p=A(5,n)
+			A(1,n)=q%k+q%i
+			A(2,n)=q%j+(q%k-q%i)/2
+			A(3,n)=p*(4+q%i-q%k)
+			if (p.ne.0) then
+				A(4,n)=4+q%i-q%k
+			else
+				A(4,n)=0
+			end if
+		end do
+		call plot3I(A,[4*x+1,4*y+1])
+
+	else !3D Real
+	
+		do k=-w,w
+			do l=-x,x
+				do m=-y,y
+					o=0
+					p=0
+					q=quaternion(0,0,0,0)
+						do while (o<b.and.p<2)
+							q=(q.qxq.q).qtq.quaternion(k*2/(s*w)+w1,l*2/(s*x)+x1,m*2/(s*y)+y1,z1)
+							o=o+1
+							p=absQ(q)
+						end do
+					c=1
+					c=c+(y+m)*(2*z+1)
+					c=c+(x+l)*(2*z+1)*(2*y+1)
+					c=c+(w+k)*(2*z+1)*(2*y+1)*(2*x+1)
+					A(1,c)=k*2/(s*w)+w1
+					A(2,c)=l*2/(s*x)+x1
+					A(3,c)=m*2/(s*y)+y1
+					A(4,c)=z1
+					if (o.eq.b) then
+						A(5,c)=1
+					end if
+				end do
+			end do
+		end do
+	
+		do n=1,size(A,2)
+			q=quaternion(A(1,n),A(2,n),A(3,n),A(4,n))
+			p=A(5,n)
+			A(1,n)=q%r+q%i
+			A(2,n)=q%j+(q%r-q%i)/2
+			A(3,n)=p*(4+q%i-q%r)
+			if (p.ne.0) then
+				A(4,n)=4+q%i-q%r
+			else
+				A(4,n)=0
+			end if
+		end do
+		call plot3I(A,[4*x+1,4*y+1])
+	
+	end if
+
 end program MSet4D
